@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <fragment th:fragment="barraSuperior">
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+                    <h4>
+                        Rehabita - Consultorio POR y PARA el movimiento
+                    </h4>
+                </div>
+                <ul class="navbar-center ml-auto">
+                    <div>
+                        <h6>
+                            Fecha:
+                            <script>
+                            date = new Date().toLocaleDateString();
+                            document.write(date);
+                            </script>
+                        </h6>
+                    </div>
+                </ul>
+            </nav>
+        </fragment>
+    </body>
+</html>

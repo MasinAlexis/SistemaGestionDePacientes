@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SGDP - Tratamientos Concluídos</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- Referencias a las bibliotecas de DataTables
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css"> -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+
+</head>
+<body id="page-top">
+    <div id="wrapper">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <section th:replace="secciones/seccionMenu :: barraMenu"></section>
+        </ul>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <section th:replace="secciones/seccionBarraSuperior :: barraSuperior"></section>
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center">
+                        <div class="col-lg-12">
+                            <div class="p-1">
+                                <div class="datos-personales">
+                                    <h3>
+                                        Paciente
+                                    </h3>
+                                    <p>DNI: <b>[[${paciente.dni}]]</b></p>
+                                    <p>Nombre y Apellido: <b>[[${paciente.nombreApellido}]]</b></p>
+                                </div>
+                                <hr class="sidebar-divider">
+                                <h3>Tratamientos Concluídos</h3>
+                                <div class="card shadow mb-4" th:if="${tratamientos != null and !tratamientos.empty}">
+                                    <div class="card-body">
+                                        <div class="tratamientos">
+                                            <!-- Aquí se mostrarían los tratamientos del paciente -->
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered dataTable" id="tabla1" width="100%" cellspacing="0">
+                                                    <thead>
+                                                    <tr>
+                                                        <th style="text-align: center; ; vertical-align: middle;">Id de Tratamiento</th>
+                                                        <th style="text-align: center; ; vertical-align: middle;">Tratamiento</th>
+                                                        <th style="text-align: center; ; vertical-align: middle;">Cant. Turnos</th>
+                                                        <th style="text-align: center; ; vertical-align: middle;">Observaciones</th>
+                                                        <th style="text-align: center; ; vertical-align: middle;">Obra Social</th>
+                                                        <th style="text-align: center; ; vertical-align: middle;">Estampillado</th>
+                                                        <th style="text-align: center; ; vertical-align: middle;">Bonos</th>
+                                                        <th style="text-align: center; ; vertical-align: middle;">Fecha</th>
+                                                        <th style="text-align: center; ; vertical-align: middle;">Opc.</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr class="fila1" th:each="tratamiento : ${tratamientos}">
+                                                        <td style="text-align: center; ; vertical-align: middle;">[[${tratamiento.idTratamiento}]]</td>
+                                                        <td style="text-align: center; ; vertical-align: middle;">[[${tratamiento.tratamiento}]]</td>
+                                                        <td style="text-align: center; ; vertical-align: middle;">[[${tratamiento.cantidadDeTurnos}]]</td>
+                                                        <td style="text-align: center; ; vertical-align: middle;">[[${tratamiento.observacionesDeTratamiento}]]</td>
+                                                        <td style="text-align: center; ; vertical-align: middle;">[[${tratamiento.obraSocial}]]</td>
+                                                        <td style="text-align: center; ; vertical-align: middle;">[[${tratamiento.estampillado}]]</td>
+                                                        <td style="text-align: center; ; vertical-align: middle;">[[${tratamiento.bonos}]]</td>
+                                                        <td style="text-align: center; ; vertical-align: middle;">
+                                                            <span th:text="${#temporals.format(tratamiento.fechaTratamiento, 'dd/MM/yyyy HH:mm')}"></span>
+                                                        </td>
+                                                        <td style="text-align: center; ; vertical-align: middle;">
+                                                            <a class="btn btn-no-border" title="Restaurar tratamiento"
+                                                               data-toggle='modal' th:data-target="'#confirmModal-' + ${tratamiento.idTratamiento}">
+                                                                <i class='fa fa-reply'></i>
+                                                            </a>
+                                                            <!-- Modal para confirmar eliminacion del tratamiento -->
+                                                            <div class="modal fade" th:id="'confirmModal-' + ${tratamiento.idTratamiento}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="confirmModalLabel">Confirmación</h5>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <p>
+                                                                                ¿Estás seguro de que deseas restaurar el tratamiento seleccionado?
+                                                                                <b>Volverá a aparecer en la lista principal</b>
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                                                            <a th:href="@{/restaurarTratamiento?idTratamiento=} + ${tratamiento.idTratamiento}"
+                                                                               class="btn btn-success">Restaurar</a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div th:if="${tratamientos == null or tratamientos.empty}">
+                                    <p> <b> El paciente no tiene tratamientos cerrados </b> </p>
+                                </div>
+                                <hr class="sidebar-divider">
+                                <div>
+                                    <h3>Pagos Registrados</h3>
+                                    <div class="pagos" th:if="${pagos != null and !pagos.empty and tratamientos != null and !tratamientos.empty}">
+                                        <div class="card shadow mb-4">
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered" id="tabla2" width="100%" cellspacing="0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="text-align: center; ; vertical-align: middle;">Tratamiento</th>
+                                                                <th style="text-align: center; ; vertical-align: middle;">Sesiones Pagas</th>
+                                                                <th style="text-align: center; ; vertical-align: middle;">Importe</th>
+                                                                <th style="text-align: center; ; vertical-align: middle;">Fecha</th>
+                                                                <th style="text-align: center; ; vertical-align: middle;">Anotaciones</th>
+                                                                <th style="text-align: center; ; vertical-align: middle;">Opc.</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr class="fila" th:each="pago : ${pagos}">
+                                                                <td style="text-align: center; ; vertical-align: middle;">
+                                                                    <a class="btn btn-no-border" th:href="@{/editarPagos?idGestionDePagos=} + ${pago.idGestionDePagos}"
+                                                                       title="Editar pago">
+                                                                        <i class='fa fa-edit'></i>
+                                                                    </a>
+                                                                    [[${pago.tratamiento}]]
+                                                                </td>
+                                                                <td style="text-align: center; ; vertical-align: middle;">[[${pago.cantidadSesionesPagadas}]]</td>
+                                                                <td style="text-align: center; ; vertical-align: middle;">[[${pago.importePagado}]]</td>
+                                                                <td style="text-align: center; ; vertical-align: middle;">
+                                                                    <span th:text="${#temporals.format(pago.fechaPago, 'dd/MM/yyyy HH:mm')}"></span>
+                                                                </td>
+                                                                <td style="text-align: center; ; vertical-align: middle;">[[${pago.observaciones}]]</td>
+                                                                <td style="text-align: center; ; vertical-align: middle;">
+                                                                    <a class="btn btn-no-border" title="Borrar pago"
+                                                                       data-toggle='modal' th:data-target="'#confirmModal-' + ${pago.idGestionDePagos}">
+                                                                        <i class='fa fa-trash'></i>
+                                                                    </a>
+                                                                    <!-- Modal para confirmar eliminacion del tratamiento -->
+                                                                    <div class="modal fade" th:id="'confirmModal-' + ${pago.idGestionDePagos}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel2" aria-hidden="true">
+                                                                        <div class="modal-dialog" role="document">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h5 class="modal-title" id="confirmModalLabel2">Confirmación</h5>
+                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                                                                       <span aria-hidden="true">&times;</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <p>
+                                                                                        ¿Estás seguro de que deseas eliminar el pago seleccionado?
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                                                                        <a th:href="@{/borrarPago?idGestionDePagos=} + ${pago.idGestionDePagos}"
+                                                                                           class="btn btn-danger">Eliminar</a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div th:if="${pagos == null or pagos.empty}">
+                                            <p> <b> El paciente no tiene pagos cargados </b> </p>
+                                        </div>
+                                        <a th:href="@{/detalleDePaciente?idPaciente=} + ${paciente.idPaciente}" class="btn btn-warning"> Volver </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+            <section th:replace="secciones/seccionFooter :: seccionFooter"></section>
+        </div>
+    </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/plug-ins/1.11.5/i18n/Spanish.json"></script>
+
+    <script>
+
+        $(document).ready(function() {
+        // Configurar el idioma a español
+        $.extend(true, $.fn.dataTable.defaults, {
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros por página",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando 0 a 0 de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna descendente"
+                }
+            }
+        });
+        // Inicializar DataTable para la tabla 1
+        $('#tabla1').DataTable({
+          "paging": true,
+          "pageLength": 5,
+          "lengthMenu": [5, 10, 25],
+          "ordering": true,
+          "info": true,
+          "searching": true,
+          "columns": [
+            null,
+            null,
+            null,
+            { "searchable": false },
+            { "searchable": false },
+            { "searchable": false },
+            { "searchable": false },
+            { "searchable": false },
+            { "searchable": false }
+            ],
+          "scrollX": false
+        });
+
+        // Inicializar DataTable para la tabla 2
+        $('#tabla2').DataTable({
+          "paging": true,
+          "pageLength": 5,
+          "lengthMenu": [5, 10, 25],
+          "ordering": true,
+          "info": true,
+          "searching": true,
+          "columns": [
+            null, // Esta columna (Tratamiento) será buscable
+            { "searchable": false }, // Las demás columnas no serán buscables
+            { "searchable": false },
+            { "searchable": false },
+            { "searchable": false },
+            { "searchable": false }
+            ],
+          "scrollX": false
+        });
+        });
+    </script>
+
+    <script src="jsPersonalizados/filtradoDeFilas1.js"></script>
+
+    <script src="jsPersonalizados/filtradoDeFilas2.js"></script>
+
+    <script src="jsPersonalizados/buscadorTablas.js"></script>
+
+    <script src="jsPersonalizados/funcionParaModal.js"></script>
+
+    <!-- Bootstrap core JavaScript
+    <script src="vendor/jquery/jquery.min.js"></script> -->
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="js/demo/chart-area-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script>
+</body>
+</html>

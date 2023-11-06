@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SGDP</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- Referencias a las bibliotecas de DataTables -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <section th:replace="secciones/seccionMenu :: barraMenu"></section>
+        </ul>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <section th:replace="secciones/seccionBarraSuperior :: barraSuperior"></section>
+                <div class="container-fluid">
+                    <div class="text-center d-sm-flex align-items-center justify-content-between mb-12">
+                        <h4 class="mb-0 align-items-center text-gray-800">
+                            <p class="card-text">Bienvenido al Sistema de Gestión de Pacientes</p>
+                        </h4>
+                    </div>
+                    <hr class="sidebar-divider">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-12">
+                        <h5 class="mb-0 align-items-center text-gray-800"> Balance semanal de pagos: </h5>
+                    </div>
+                    <br>
+                    <div class="pagos" th:if="${pagosDelDia != null}">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="card shadow mb-4">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="tabla1" width="100%" cellspacing="0">
+                                                <thead>
+                                                <tr>
+                                                    <th style="text-align: center; ; vertical-align: middle;">DNI Paciente</th>
+                                                    <th style="text-align: center; ; vertical-align: middle;">Importe</th>
+                                                    <th style="text-align: center; ; vertical-align: middle;">Sesiones Pagadas</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr class="fila" th:each="pagos : ${pagosDelDia}">
+                                                    <td style="text-align: center; ; vertical-align: middle;">[[${pagos.dni}]]</td>
+                                                    <td style="text-align: center; ; vertical-align: middle;">$ [[${pagos.importePagado}]]</td>
+                                                    <td style="text-align: center; ; vertical-align: middle;">[[${pagos.cantidadSesionesPagadas}]]</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <small>* La búsqueda se da por DNI de Paciente</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div th:if="${exito != null}">
+                                    <div th:if="${exito == false}" class="text-center alert alert-danger">
+                                        Hubo un error al cerrar el Balance Semanal. Por favor, inténtelo de nuevo.
+                                    </div>
+                                    <div th:if="${exito == true}" class="text-center alert alert-success">
+                                        Balance semanal cerrado con éxito.
+                                    </div>
+                                </div>
+                                <div class="card text-black bg-primary mb-3" style="max-width: 18rem;">
+                                    <div class="card-header">Total acumulado en la semana</div>
+                                    <div class="card-body text-white">
+                                        <p class="card-text text-center"> <b> $ [[${importeTotal}]] </b> </p>
+                                    </div>
+                                    <div class="card-footer text-white">
+                                        <div>
+                                            <a th:href="@{/consultaDeBalances}" class="btn btn-outline-primary" style="display: block; margin-bottom: 10px;">
+                                                Consultar Balances
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a class="btn btn-outline-dark" style="display: block; margin-bottom: 10px;"
+                                               data-toggle='modal' th:data-target="'#confirmModalGenerarBalance'">
+                                                Generar Balances
+                                            </a>
+                                        </div>
+                                        <!-- Modal para generar balance -->
+                                        <div class="modal fade" th:id="'confirmModalGenerarBalance'" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel2" aria-hidden="true">
+                                            <div class="modal-dialog " role="document">
+                                                <div class="modal-content" style="color: black;">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="confirmModalLabel2">Confirmación</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>
+                                                            ¿Estás seguro de que desea cerrar el balance semanal?
+                                                        </p>
+                                                        <p>
+                                                            <b>Si ya existe un balance cargado para la semana actual, este será reemplazado.</b>
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <form th:action="@{/registrarBalanceSemanal}" method="POST">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                                            <button type="submit" class="btn btn-success">Generar Balance</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center" th:if="${pagosDelDia == null or pagosDelDia.empty}">
+                        <div class="card shadow mb-4">
+                            <br>
+                            <p>
+                                <b> No hay pagos registrados en la semana </b>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section th:replace="secciones/seccionFooter :: seccionFooter"></section>
+        </div>
+    </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/plug-ins/1.11.5/i18n/Spanish.json"></script>
+
+    <script>
+        $(document).ready(function() {
+        // Configurar el idioma a español
+        $.extend(true, $.fn.dataTable.defaults, {
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros por página",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando 0 a 0 de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna descendente"
+                }
+            }
+        });
+        // Inicializar DataTable para la tabla 1
+        $('#tabla1').DataTable({
+          "paging": true,
+          "pageLength": 10,
+          "lengthMenu": [10, 25, 50],
+          "ordering": true,
+          "info": true,
+          "searching": true,
+          "columns": [
+            null,
+            { "searchable": false },
+            { "searchable": false }
+            ],
+          "scrollX": false
+        });
+        });
+    </script>
+
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="js/demo/chart-area-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script>
+
+</body>
+
+</html>

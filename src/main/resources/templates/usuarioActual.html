@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SGDP - Gestion de Precios</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <section th:replace="secciones/seccionMenu :: barraMenu"></section>
+        </ul>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <section th:replace="secciones/seccionBarraSuperior :: barraSuperior"></section>
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center">
+                        <div class="col-lg-8">
+                            <div class="p-5">
+                                <div class="text-center">
+                                    <p class="h4 text-gray-900 mb-4">Usuario Actual</p>
+                                </div>
+                                <hr class="sidebar-divider">
+                                <p> Usuario: <b> [[${username}]] </b> </p>
+                                <p> Email: <b> [[${usuario.emailUsuario}]] </b> </p>
+                                <br>
+                                <div class="row justify-content-md-center">
+                                    <div>
+                                        <a th:href="@{/editarUsuario?username=} + ${username}" class="btn btn-success btn-user btn-block"> Editar Usuario </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Usuarios registrados -->
+                    <div class="pagos" th:if="${usuariosDisponibles != null}">
+                        <div class="col-lg-8">
+                            <div class="card shadow mb-4">
+                                <br>
+                                <div class="text-center">
+                                    <p class="h4 text-gray-900 mb-4">Usuarios registrados en el Sistema</p>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="tabla2" width="100%" cellspacing="0">
+                                            <thead>
+                                            <tr>
+                                                <th style="text-align: center; ; vertical-align: middle;">Nombre de Usuario</th>
+                                                <th style="text-align: center; ; vertical-align: middle;">Email</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="fila" th:each="usuario : ${usuariosDisponibles}">
+                                                <td style="text-align: center; ; vertical-align: middle;">[[${usuario.username}]]</td>
+                                                <td style="text-align: center; ; vertical-align: middle;">[[${usuario.emailUsuario}]]</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="text-center" th:if="${usuariosDisponibles == null or usuariosDisponibles.empty}">
+                                        <p> <b> El único usuario registrado es el de la sesión actual </b> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section th:replace="secciones/seccionFooter :: seccionFooter"></section>
+        </div>
+    </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="js/demo/chart-area-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script>
+
+</body>
+
+</html>

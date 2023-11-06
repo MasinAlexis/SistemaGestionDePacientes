@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SGDP - Editar Tratamiento</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <section th:replace="secciones/seccionMenu :: barraMenu"></section>
+        </ul>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <section th:replace="secciones/seccionBarraSuperior :: barraSuperior"></section>
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center">
+                        <div class="col-lg-12">
+                            <div class="p-2">
+                                <div class="text-center">
+                                    <h4 class="h4 text-gray-900 mb-4">
+                                        <p class="card-text">Editar Tratamiento</p>
+                                    </h4>
+                                </div>
+                                <form th:action="@{/editarTratamiento}" method="POST" th:object="${tratamiento}">
+                                    <p>Paciente: </p>
+                                    <div class="form-group col-lg-2">
+                                        <input type="number" name="dni" th:field="*{dni}"
+                                               class="form-control form-control-user" value="${tratamiento.dni}" readonly>
+                                    </div>
+                                    <p>Tratamiento: </p>
+                                    <div class="form-group col-lg-2">
+                                        <input type="text" th:field="*{idTratamiento}" required="true"
+                                               class="form-control form-control-user" value="${tratamiento.idTratamiento}" readonly>
+                                    </div>
+                                    <p>Descripción del Tratamiento *</p>
+                                    <div class="form-group col-lg-8">
+                                        <input type="text" th:field="*{tratamiento}" required="true" maxlength="1000"
+                                               class="form-control form-control-user" value="${tratamiento.tratamiento}">
+                                    </div>
+                                    <p>Cantidad de Turnos *</p>
+                                    <div class="form-group col-lg-2">
+                                        <input type="number" th:field="*{cantidadDeTurnos}" required="true" min="0" max="999"
+                                               class="form-control form-control-user" value="${tratamiento.cantidadDeTurnos}">
+                                    </div>
+                                    <p>Observaciones</p>
+                                    <div class="form-group col-lg-12">
+                                        <input type="text" th:field="*{observacionesDeTratamiento}" maxlength="3000"
+                                               class="form-control form-control-user" value="${tratamiento.observacionesDeTratamiento}">
+                                    </div>
+                                    <p>Obra Social *</p>
+                                    <div class="form-group col-lg-4">
+                                        <input type="text" th:field="*{obraSocial}" required="true" maxlength="100"
+                                               class="form-control form-control-user" value="${tratamiento.obraSocial}">
+                                    </div>
+                                    <p>Estampillado *</p>
+                                    <div class="form-group col-lg-4">
+                                        <input type="text" th:field="*{estampillado}" required="true" maxlength="100"
+                                               class="form-control form-control-user" value="${tratamiento.estampillado}">
+                                    </div>
+                                    <p>Bonos *</p>
+                                    <div class="form-group col-lg-4">
+                                        <input type="text" th:field="*{bonos}" required="true" maxlength="100"
+                                               class="form-control form-control-user" value="${tratamiento.bonos}">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="hidden" th:field="*{fechaTratamiento}"
+                                               class="form-control form-control-user" value="${tratamiento.fechaTratamiento}">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="hidden" th:field="*{controlDeSesionesPagas}"
+                                               class="form-control form-control-user" value="${tratamiento.controlDeSesionesPagas}">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="hidden" th:field="*{tratamientoConcluido}"
+                                               class="form-control form-control-user" value="${tratamiento.tratamientoConcluido}">
+                                    </div>
+                                    <div class="row justify-content-md-center">
+                                        <div>
+                                            <input type="submit" name="guardar" value="Guardar Tratamiento" class="btn btn-success btn-user btn-block" />
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-start align-items-end">
+                        <div>
+                            <a th:href="@{/detalleDePaciente?idPaciente=} + ${idPaciente}" class="btn btn-warning"> Volver </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section th:replace="secciones/seccionFooter :: seccionFooter"></section>
+        </div>
+    </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="js/demo/chart-area-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script>
+
+</body>
+
+</html>
