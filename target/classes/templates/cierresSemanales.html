@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SGDP</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- Referencias a las bibliotecas de DataTables -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <section th:replace="secciones/seccionMenu :: barraMenu"></section>
+        </ul>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <section th:replace="secciones/seccionBarraSuperior :: barraSuperior"></section>
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-12">
+                        <h3 class="mb-0 align-items-center text-gray-800"> Balances semanales</h3>
+                    </div>
+                    <br>
+                    <div class="balancesSemanales" th:if="${balancesSemanales != null}">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="card shadow mb-4">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="tabla1" width="100%" cellspacing="0">
+                                                <thead>
+                                                <tr>
+                                                    <th style="text-align: center; ; vertical-align: middle;">Semana</th>
+                                                    <th style="text-align: center; ; vertical-align: middle;">Balance</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr class="fila" th:each="balance : ${balancesSemanales}">
+                                                    <td style="text-align: center; ; vertical-align: middle;">
+                                                        <span th:text="${#dates.format(balance.diaSemanaInicio, 'dd/MM/yyyy')}"></span>
+                                                        -
+                                                        <span th:text="${#dates.format(balance.diaSemanaFin, 'dd/MM/yyyy')}"></span>
+                                                    </td>
+                                                    <td style="text-align: center; ; vertical-align: middle;">$ [[${balance.totalSemanal}]]</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <small>* La búsqueda se da por fecha de inicio o fin de Semana</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center" th:if="${balancesSemanales == null or balancesSemanales.empty}">
+                        <div class="card shadow mb-4">
+                            <br>
+                            <p>
+                                <b> No hay balances semanales registrados </b>
+                            </p>
+                        </div>
+                    </div>
+                    <br>
+                    <a th:href="@{/inicio}" class="btn btn-warning"> Volver </a>
+                </div>
+            </div>
+            <section th:replace="secciones/seccionFooter :: seccionFooter"></section>
+        </div>
+    </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/plug-ins/1.11.5/i18n/Spanish.json"></script>
+
+    <script>
+        $(document).ready(function() {
+        // Configurar el idioma a español
+        $.extend(true, $.fn.dataTable.defaults, {
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros por página",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando 0 a 0 de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna descendente"
+                }
+            },
+            order: [
+            [0, 'desc'],  // Esto ordena la primera columna de manera ascendente
+        ]
+        });
+        // Inicializar DataTable para la tabla 1
+        $('#tabla1').DataTable({
+          "paging": true,
+          "pageLength": 10,
+          "lengthMenu": [10, 25, 50],
+          "ordering": true,
+          "info": true,
+          "searching": true,
+          "columns": [
+            null,
+            { "searchable": false },
+            ],
+          "scrollX": false
+        });
+        });
+    </script>
+
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="js/demo/chart-area-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script>
+
+</body>
+
+</html>
